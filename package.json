@@ -1,0 +1,49 @@
+{
+  "name": "hisleepy",
+  "version": "1.0.0",
+  "description": "A voice joke bot",
+  "main": "index.js",
+  "author": "lars.mortenson@gmail.com",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn build && node ./dist/index.js",
+    "dev": "ts-node index.ts",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "test": "jest",
+    "start:image": "build:image && docker run hisleepy:latest",
+    "build:image": "yarn build && docker build . -t hisleepy:latest",
+    "deploy": "cdk bootstrap && cdk deploy",
+    "deploy-secrets": "aws ssm put-parameter --name /hisleepy/discordkey --type SecureString --value "
+  },
+  "dependencies": {
+    "@aws-cdk/aws-ec2": "^1.95.1",
+    "@aws-cdk/aws-ecr": "^1.95.1",
+    "@aws-cdk/aws-ecs": "^1.95.1",
+    "@aws-cdk/aws-iam": "^1.95.1",
+    "@aws-cdk/core": "^1.95.1",
+    "@aws-sdk/client-polly": "^3.7.0",
+    "@aws-sdk/client-ssm": "^3.9.0",
+    "@aws-sdk/client-transcribe-streaming": "^3.7.0",
+    "discord.js": "^12.5.1",
+    "ffmpeg": "^0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
+    "node-opus": "^0.3.3",
+    "source-map-support": "^0.5.19"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.95.1",
+    "@types/jest": "^26.0.21",
+    "@types/node": "^14.14.35",
+    "@types/ws": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "aws-cdk": "1.95.1",
+    "eslint": "^7.23.0",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}

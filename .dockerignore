@@ -1,0 +1,8 @@
+node_modules
+dist
+Dockerfile
+lib
+test
+jest.config.js
+cdk.json
+cdk.out
