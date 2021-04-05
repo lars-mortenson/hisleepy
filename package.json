@@ -1,6 +1,6 @@
 {
   "name": "hisleepy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A voice joke bot",
   "main": "index.js",
   "author": "lars.mortenson@gmail.com",
@@ -8,11 +8,12 @@
   "scripts": {
     "start": "yarn build && node ./dist/index.js",
     "dev": "ts-node index.ts",
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "yarn && tsc",
+    "watch": "yarn && tsc -w",
     "cdk": "cdk",
     "test": "jest",
-    "start:image": "build:image && docker run hisleepy:latest",
+    "start:image": "yarn build:image && docker run -v $HOME/.aws/credentials:/home/hisleepyuser/.aws/credentials:ro hisleepy:latest",
+    "start:image-windows": "yarn build:image && docker run -v %USERPROFILE%/.aws/credentials:/home/hisleepyuser/.aws/credentials:ro hisleepy:latest",
     "build:image": "yarn build && docker build . -t hisleepy:latest",
     "deploy": "cdk bootstrap && cdk deploy",
     "deploy-secrets": "aws ssm put-parameter --name /hisleepy/discordkey --type SecureString --value "
