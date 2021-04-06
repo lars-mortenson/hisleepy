@@ -1,4 +1,3 @@
-// Import discord.js and create the client
 import { Client as DiscordClient, VoiceChannel, VoiceConnection } from 'discord.js'
 import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly'
 import { Readable } from 'stream';
@@ -10,7 +9,6 @@ import {
   TranscribeStreamingClient
 } from "@aws-sdk/client-transcribe-streaming";
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
-//import * as fs from 'fs';
 
 const region = 'us-east-1';
 
@@ -29,7 +27,7 @@ const dadJokeMatch = /(I'm|I am)(( [^.,\s]+){1,4})/i
 
 const sayDadJoke = async (fakeName: string) => {
   const result = await polly.send(new SynthesizeSpeechCommand({
-    OutputFormat: 'pcm',
+    OutputFormat: 'mp3',
     VoiceId: 'Bianca',
     Text: `Hi ${fakeName}, I'm Bianca!`,
     TextType: 'text',
@@ -41,8 +39,8 @@ const sayDadJoke = async (fakeName: string) => {
   }
 
   const dispatcher = connection.play(result.AudioStream as Readable, {
-    type: 'converted'
-  });  
+    type: 'unknown'
+  });
 
   dispatcher.on('start', () => {
     console.log('Sound is now playing!');
@@ -59,24 +57,11 @@ async function* pcmStereoToMono(audio: Readable): AsyncIterable<AudioStream> {
   for await (const chunk of (audio as AsyncIterable<Buffer>)) {
     yield {
       AudioEvent: {
-        AudioChunk: Buffer.from(chunk.filter((r, i) => (i % 4) in [0, 1]))
+        AudioChunk: Buffer.from(chunk.filter((_, i) => (i % 4) in [0, 1]))
       }
     }
   }
 }
-
-/*
-const pcmMonoToStereo = (mono: Readable, stereo: Readable) => {
-  while (mono.pipe()
-  for await (const chunk of (audio as AsyncIterable<Buffer>)) {
-    yield {
-      AudioEvent: {
-        AudioChunk: Buffer.from(chunk.filter((r, i) => (i % 4) in [0, 1]))
-      }
-    }
-  }
-}
-*/
 
 // Register an event so that when the bot is ready, it will log a messsage to the terminal
 discord.on('ready', async () => {

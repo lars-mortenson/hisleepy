@@ -1,6 +1,6 @@
 FROM node:14-alpine
 RUN apk update
-RUN apk add make py3-pip build-base
+RUN apk add make py3-pip build-base ffmpeg
 # Create a group and user
 RUN addgroup -S hisleepygroup && adduser -S hisleepyuser -G hisleepygroup
 USER hisleepyuser
