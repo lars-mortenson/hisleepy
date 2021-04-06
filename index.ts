@@ -19,8 +19,6 @@ const transcribeClient = new TranscribeStreamingClient({ region })
 
 let connection: VoiceConnection;
 
-const channelToJoin = () => '813563415993384964'
-
 const userStreams: Record<string, Readable> = {};
 
 const dadJokeMatch = /(I'm|I am)(( [^.,\s]+){1,4})/i
@@ -66,8 +64,15 @@ async function* pcmStereoToMono(audio: Readable): AsyncIterable<AudioStream> {
 // Register an event so that when the bot is ready, it will log a messsage to the terminal
 discord.on('ready', async () => {
   console.log(`Logged in as ${discord.user?.tag}!`);
-  const VoiceChannel = discord.channels.cache.get(channelToJoin());
-  connection = await (VoiceChannel as VoiceChannel).join();
+})
+
+const joinChannel = async (channelId: string) => {
+  const voiceChannel = discord.channels.cache.get(channelId);
+  if (!voiceChannel) {
+    console.log(`Not a voice channel: ${channelId}`)
+    return;
+  }
+  connection = await (voiceChannel as VoiceChannel).join();
   connection.on('error', (err) => {
     console.log(`A sad thing happened: ${err}`);
   })
@@ -101,6 +106,16 @@ discord.on('ready', async () => {
       }
     }
   })
+}
+
+discord.on('message', async (message) => {
+  if (message.member && message.mentions.users.has(discord.user?.id || '')) {
+    if (message.content.includes('!join') && message.member.voice.channelID) {
+      await joinChannel(message.member.voice.channelID);
+    } else if (message.content.includes('!leave')) {
+      message.guild?.me?.voice.setChannel(null);
+    }
+  }
 })
 
 ssm.send(new GetParameterCommand({
